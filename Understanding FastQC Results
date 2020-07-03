@@ -1,0 +1,72 @@
+INTRODUCTION :
+
+FastQC aims to provide a quality control (QC) report which can spot problems which originate either in the sequencer or in the starting library material.
+Fast QC can be run in one of two modes: (1) as a stand alone application (2) non-interactive mode (pipeline intergration). 
+
+# To run fastQC in a Linux terminal type:
+            fastqc <location of fastq file> 
+# A real example: 
+            fastqc /home/bilalm/H_glaber_genomes/raw_fastq_reads/SRR363832.fastq
+ 
+EVALUATING RESULTS :
+
+A .HTML report is produced shwoing a summary of the modules which were run, and a quick evaluation of whether the results of the module seem normal (green tick),
+or slightly abnormal (orange triangle) or very unusual (red cross). A .zip file is created - unzip this and look for: fastqc_report.zip
+
+A 'normal' sample, as far as FastQC is concerned, is random and diverse. You should treat the summary evaluations as POINTERS to where you should concentrate your 
+attention and understand why your library may not look random and diverse.
+
+RESULT_1: "PER BASE SEQUENCE QUALITY" 
+A BoxWhisker type plot is drawn. The elements of the plot are as follows:
+1. The central red line is the median value.
+2. The yellow box represents the inter-quartile range (25-75%)
+3. The upper and lower whiskers represent the 10% and 90% points
+4. The blue line represents the mean quality
+
+The y-axis on the graph shows the quality scores. The higher the score the better the base calls. 
+Very good quality calls - green | reasonable quality calls - orange | poor quality calls - red. 
+
+The quality of calls on most platforms will degrade as the run progresses, so its common to see base calls falling into the orange area towards the end of a read. 
+
+RESULT_2: "PER SEQUENCE QUALITY SCORES"
+- The per sequence quality score report allows you to see if a subset of your sequences have universally low quality values. 
+- If a significant proportion of the sequences in a run have overall low quality, then this could indicate some kind of systemic provblem - possibily with just part of the run.
+
+RESULT_3: "PER BASE SEQUENCE CONTENT"
+- Per base sequence content plots out the proportion of each base position in a file for which each of the four normal DNA bases has been called (G,C,T,A). 
+- IN a RAMDOM LIBRARY you would expect that there would be little to no difference between the different bases of a sequence run, so the lines in this plot should run parallell with each other!
+
+RESULT_4: "PER BASE GC CONTENT"
+- Per base GC content plots out the GC content of each base position in a file. 
+- In a RANDOM LIBRARY you would expect that there would be little to no difference between the different bases of a sequence run, so the line in this plot should run horizontally across the graph!
+- The overall GC content should reflect the GC content of the underlying genome. 
+- If you see a GC bias which changes in different bases then this could indicate an overrepresented sequence which is contaminating your library. 
+
+RESULT_5: "PER SEQUENCE GC CONTENT"
+- This module measaures the GC content across the whole length of each sequence in a file and compares it to a modelled normal distribution of GC content. 
+- In a normal random library you would expect to see a roughly normal distribution of GC content where the central peak corresponds to the overall GC content of the underlying genome.
+- Since we dont know the GC content of the genome the modal GC content is calculated from the observed data and used to build a reference distribution. 
+- A normal distribution which is shifted indicates some systemic bias which is independant of base position. However a shifted normal distribution arnt flagged as errors as the module doesn't know what your genomes GC content should be!
+
+RESULT_6: "PER BASE N CONTENT"
+- If a sequencer is unable to make a base call with sufficient confidence then it will normally substitute an N rather than a conventional base call. 
+- This module plots out the percentage of base calls at each position for which an N was called. 
+- It's not unusual to see a very low proportion of Ns appearing in a sequence, especially nearer the end of a sequence.
+
+RESULT_7: "SEQUENCE LENGTH DISTRIBUTION"
+- Some high throughput sequencers generate sequence fragments of uniformn length, but others can contain reads of wildly varying lengths. 
+- Even with uniform length libraries, some pipelines will trim sequences to remove poor quality base calls from the read. 
+- This module generates a graph showing the distribution of fragment sizes in the file which was analysed.  
+- In many cases this will produce a simple graph showing a peak only at one size, but for variable length FastQ files this will show the relative amounts of each different size of sequence fragment.
+
+RESULT_8: "DUPLICATE SEQUENCES" 
+- In a diverse library most sequences will occur only once in the final set. A low level of duplication may indicate a very high level of coverage of the target sequence, 
+but a high level of duplication is more likely to indicate some kind of enrichment bias (e.g. PCR over amplification).
+- This module counts the degree of duplicatiomn for every sequence in the set and creates a plot showing the relative number of sequences with different degrees of duplication!
+
+RESULT_9: "OVERREPRESENTED SEQUENCES"
+- Finding that a single sequence is very overrepresented in the set either means that it is highly biologically significant, or indicates that the library is contaminated, or not as diverse as you expected.
+- This module lists all of the sequence which make up more than 0.1% of the total.
+
+RESULT_10: "OVERRESPRESENTED KMERS"
+- This module counts the enrichment of every 5-mer within the sequence library. 
